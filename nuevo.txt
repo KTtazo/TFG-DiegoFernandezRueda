@@ -1,0 +1,9 @@
+Diego Fernández Rueda
+70423611A
+Grado Ingeniería Informática
+
+Título
+Web Scrapping y análisis con base de datos en un juego de azar
+
+Descripción
+Este trabajo pretende aplicar técnicas de web scrapping con selenium para recuperar de manera regular el histrial de resultados de un juego de azar a partir de la información publicada en sitios web. Posteriormente los datos recuperados se integrarán en una base de datos para realizar análisis detallados que puedan guiar las potenciales apuestas del usuario en función de los datos ganadores históricos.
