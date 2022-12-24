@@ -1,0 +1,22 @@
+SELECT * FROM public."Bonoloto" ORDER BY "Orden" DESC;
+SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1
+DELETE FROM public."Bonoloto" WHERE(SELECT FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 10);
+SELECT * FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 8000
+SELECT * FROM public."Primitiva" ORDER BY "Orden" DESC LIMIT 4000
+SELECT TOP (10) FROM public."Bonoloto";
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7968;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7967;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7966;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7965;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7964;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7963;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7962;
+DELETE FROM public."Bonoloto" WHERE "Orden" = 7961;
+DELETE FROM public."Bonoloto"
+DELETE FROM public."Primitiva"
+DELETE FROM public."BonolotoComp";
+DELETE FROM public."PrimitivaComp";
+SELECT * FROM public."BonolotoComp" ORDER BY "Orden" DESC LIMIT 8000
+SELECT * FROM public."PrimitivaComp" ORDER BY "Orden" ASC LIMIT 8000
+SELECT exists ( SELECT 1 FROM public."Primitiva" WHERE "Orden" = 4492 AND "Bola6"=46 LIMIT 1);
+INSERT INTO public."Estadisticas" VALUES ('Media',6.904495950851717,7.0382574699804525,7.056967327562133,6.955878246299916,6.874895280647864,6.906450712091594,7.073722423903938)
