@@ -1,6 +1,6 @@
 import numpy as np
 
-# loss function and its derivative
+# función ctivación y su derivada
 
 
 def mse(y_true, y_pred):

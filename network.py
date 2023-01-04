@@ -1,3 +1,5 @@
+#clase network, se usará para montar la red neuronal añadiéndole las capas
+
 class Network:
     def __init__(self):
         self.layers = []
