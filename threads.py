@@ -377,7 +377,7 @@ def estadisticasPri():
     conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
     conn.autocommit = True#Setting auto commit false
     cursor = conn.cursor()
-    query_ultimo='''SELECT "Orden" FROM public."PrimitivaComp" ORDER BY "Orden" DESC LIMIT 1'''
+    query_ultimo='''SELECT "Orden" FROM public."Primitiva" ORDER BY "Orden" DESC LIMIT 1'''
     cursor.execute(query_ultimo)
     orden_ultimo=cursor.fetchmany(1)[0][0]
     #print(orden_ultimo)
@@ -388,10 +388,10 @@ def estadisticasPri():
     listaVarianza=[]
     for b in range(7):
         bola=b+1
-        bola="B"+str(bola)+"_Last" 
+        bola="Bola"+str(bola) 
         lista=[]
         for orden in range(0,orden_ultimo):
-            query='''SELECT "'''+bola+'''" FROM public."PrimitivaComp" WHERE "Orden" ='''+ str(orden) +''';'''
+            query='''SELECT "'''+bola+'''" FROM public."Primitiva" WHERE "Orden" ='''+ str(orden) +''';'''
             cursor.execute(query)
             valorBola=cursor.fetchmany(1)[0][0]
             if(valorBola<1000):
@@ -433,7 +433,7 @@ def estadisticasBon():
     conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
     conn.autocommit = True#Setting auto commit false
     cursor = conn.cursor()
-    query_ultimo='''SELECT "Orden" FROM public."BonolotoComp" ORDER BY "Orden" DESC LIMIT 1'''
+    query_ultimo='''SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1'''
     cursor.execute(query_ultimo)
     orden_ultimo=cursor.fetchmany(1)[0][0]
     #print(orden_ultimo)
@@ -444,11 +444,11 @@ def estadisticasBon():
     listaVarianza=[]
     for b in range(7):
         bola=b+1
-        bola="B"+str(bola)+"_Last" 
+        bola="Bola"+str(bola) 
         lista=[]
         print(orden_ultimo)
         for orden in range(0,orden_ultimo):
-            query='''SELECT "'''+bola+'''" FROM public."BonolotoComp" WHERE "Orden" ='''+ str(orden) +''';'''
+            query='''SELECT "'''+bola+'''" FROM public."Bonoloto" WHERE "Orden" ='''+ str(orden) +''';'''
             #print(query)
             cursor.execute(query)
             #print(orden)
@@ -487,6 +487,72 @@ def estadisticasBon():
     tiempo_fin=datetime.now()
     print("Tiempo transcurrido (Bonoloto) stats: " +str(tiempo_fin - tiempo_ini))
 
+def desvEstBon():
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo = '''SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo = cursor.fetchmany(1)[0][0]
+    listaBolas=[[],[],[],[],[],[],[]]
+    for orden in range(0, orden_ultimo):
+        listaDesv = []
+        for b in range(7):
+            #print(listaBolas[b])
+            bola = b+1
+            bola = "Bola"+str(bola)
+            query = '''SELECT "'''+bola + \
+                '''" FROM public."Bonoloto" WHERE "Orden" =''' + \
+                str(orden) + ''';'''
+            cursor.execute(query)
+            valorBola = cursor.fetchmany(1)[0][0]
+            listaBolas[b].append(valorBola)
+            # print(listaBolas)
+            if (len(listaBolas[b]) < 2):
+                listaDesv.append(0)
+
+            else:
+                listaDesv.append(statistics.variance(listaBolas[b])) 
+        
+        queryInsertDes = '''INSERT INTO public."BonolotoDesvEst" VALUES ('''+str(listaDesv[0]) + "," + str(listaDesv[1]) + "," + str(listaDesv[2]) + "," + str(listaDesv[3]) + "," + str(listaDesv[4]) + "," + str(listaDesv[5]) + "," + str(listaDesv[6]) + ","+str(orden)+")"
+        #print(queryInsertDes)
+        cursor.execute(queryInsertDes)
+        
+
+def desvEstPri():
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo = '''SELECT "Orden" FROM public."Primitiva" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo = cursor.fetchmany(1)[0][0]
+    listaBolas = [[], [], [], [], [], [], []]
+    for orden in range(0, orden_ultimo):
+        listaDesv = []
+        for b in range(7):
+            # print(listaBolas[b])
+            bola = b+1
+            bola = "Bola"+str(bola)
+            query = '''SELECT "'''+bola + \
+                '''" FROM public."Primitiva" WHERE "Orden" =''' + \
+                str(orden) + ''';'''
+            cursor.execute(query)
+            valorBola = cursor.fetchmany(1)[0][0]
+            listaBolas[b].append(valorBola)
+            # print(listaBolas)
+            if (len(listaBolas[b]) < 2):
+                listaDesv.append(0)
+
+            else:
+                listaDesv.append(statistics.variance(listaBolas[b]))
+
+        queryInsertDes = '''INSERT INTO public."PrimitivaDesvEst" VALUES ('''+str(listaDesv[0]) + "," + str(listaDesv[1]) + "," + str(
+            listaDesv[2]) + "," + str(listaDesv[3]) + "," + str(listaDesv[4]) + "," + str(listaDesv[5]) + "," + str(listaDesv[6]) + ","+str(orden)+")"
+        # print(queryInsertDes)
+        cursor.execute(queryInsertDes)
+
 def aparicionesPri(num,veces):
     cuenta=0
     #Establishing the connection
@@ -523,8 +589,6 @@ def aparicionesBon(num,veces):
             cuenta+=1
     print(cuenta)
 
-def regresionPri():
-    print("sf")  
 
 def regLinPri():
     bola1=1
@@ -666,12 +730,16 @@ thread11=threading.Thread(name="hilo11",target=estadisticasPri)
 #thread11.start()
 thread12=threading.Thread(name="hilo12",target=estadisticasBon)
 #thread12.start()
+thread18 = threading.Thread(name="hilo18", target=desvEstBon)
+#thread18.start()
+thread19 = threading.Thread(name="hilo19", target=desvEstPri)
+#thread19.start()
 thread13=threading.Thread(name="hilo13",target=aparicionesPri,args=(2,50))
 #thread13.start()
 thread14=threading.Thread(name="hilo14",target=aparicionesBon,args=(2,50))
 #thread14.start()
 thread15=threading.Thread(name="hilo15",target=regLinPri)
-thread15.start()
+#thread15.start()
 thread16=threading.Thread(name="hilo16",target=regLinBon)
 #thread16.start()
 thread17=threading.Thread(name="hilo17",target=regPolPri)
