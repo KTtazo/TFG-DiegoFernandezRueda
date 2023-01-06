@@ -519,7 +519,6 @@ def desvEstBon():
         #print(queryInsertDes)
         cursor.execute(queryInsertDes)
         
-
 def desvEstPri():
     conn = psycopg2.connect(database="BBDD", user='postgres',
                             password='diego666', host='127.0.0.1', port='5432')
