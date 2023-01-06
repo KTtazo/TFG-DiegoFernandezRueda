@@ -552,6 +552,36 @@ def desvEstPri():
         # print(queryInsertDes)
         cursor.execute(queryInsertDes)
 
+
+def mediaBon():
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo = '''SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo = cursor.fetchmany(1)[0][0]
+    listaBolas = [[], [], [], [], [], [], []]
+    for orden in range(0, orden_ultimo):
+        listaMed = []
+        for b in range(7):
+            # print(listaBolas[b])
+            bola = b+1
+            bola = "Bola"+str(bola)
+            query = '''SELECT "'''+bola + \
+                '''" FROM public."Bonoloto" WHERE "Orden" =''' + \
+                str(orden) + ''';'''
+            cursor.execute(query)
+            valorBola = cursor.fetchmany(1)[0][0]
+            listaBolas[b].append(valorBola)
+            # print(listaBolas)
+            listaMed.append(statistics.mean(listaBolas[b]))
+
+        queryInsertMedia = '''INSERT INTO public."BonolotoMedia" VALUES ('''+str(listaMed[0]) + "," + str(listaMed[1]) + "," + str(
+            listaMed[2]) + "," + str(listaMed[3]) + "," + str(listaMed[4]) + "," + str(listaMed[5]) + "," + str(listaMed[6]) + ","+str(orden)+")"
+        # print(queryInsertDes)
+        cursor.execute(queryInsertMedia)
+
 def aparicionesPri(num,veces):
     cuenta=0
     #Establishing the connection
@@ -733,6 +763,10 @@ thread18 = threading.Thread(name="hilo18", target=desvEstBon)
 #thread18.start()
 thread19 = threading.Thread(name="hilo19", target=desvEstPri)
 #thread19.start()
+thread20 = threading.Thread(name="hilo20", target=mediaBon)
+thread20.start()
+#thread20 = threading.Thread(name="hilo21", target=mediaPri)
+# thread21.start()
 thread13=threading.Thread(name="hilo13",target=aparicionesPri,args=(2,50))
 #thread13.start()
 thread14=threading.Thread(name="hilo14",target=aparicionesBon,args=(2,50))
