@@ -689,7 +689,25 @@ def numVecesBon(ordenEntrada, bola, sorteos):
         respuesta = cursor.fetchmany(1)[0][0]
         if (respuesta == True):
             cuenta += 1
-    print(cuenta)
+    return cuenta
+
+
+def numVecesPri(ordenEntrada, bola, sorteos):
+    cuenta = 0
+    # Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    for ordenEvaluado in range(ordenEntrada-sorteos, ordenEntrada):
+        # print(ordenEvaluado)
+        queryCheck = '''SELECT exists ( SELECT 1 FROM public."Primitiva" WHERE "Orden" =''' + str(ordenEvaluado)+''' AND ("Bola1"='''+str(bola)+''' OR "Bola2"='''+str(
+            bola)+''' OR "Bola3"='''+str(bola)+''' OR "Bola4"='''+str(bola)+''' OR "Bola5"='''+str(bola)+''' OR "Bola6"='''+str(bola)+''' OR "Bola7"='''+str(bola)+''') LIMIT 1);'''
+        cursor.execute(queryCheck)
+        respuesta = cursor.fetchmany(1)[0][0]
+        if (respuesta == True):
+            cuenta += 1
+    return cuenta
 
 def apariciones10Bon5():
     conn = psycopg2.connect(database="BBDD", user='postgres',
