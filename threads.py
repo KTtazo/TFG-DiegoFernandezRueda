@@ -742,6 +742,40 @@ def apariciones10Bon5():
         cursor.execute(queryInsertMedia5)
         cursor.execute(queryInsertMedia10)
 
+def apariciones10Pri5():
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo = '''SELECT "Orden" FROM public."Primitiva" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo = cursor.fetchmany(1)[0][0]
+    for orden in range(0, orden_ultimo):
+        lista5 = []
+        lista10 = []
+        for b in range(7):
+            # print(listaBolas[b])
+            bola = b+1
+            bola = "Bola"+str(bola)
+            query = '''SELECT "'''+bola + \
+                '''" FROM public."Primitiva" WHERE "Orden" =''' + \
+                str(orden) + ''';'''
+            cursor.execute(query)
+            valorBola = cursor.fetchmany(1)[0][0]
+
+            numApariciones5 = numVecesPri(orden, valorBola, 5)
+            numApariciones10 = numVecesPri(orden, valorBola, 10)
+            lista5.append(numApariciones5)
+            lista10.append(numApariciones10)
+
+        queryInsertMedia5 = '''INSERT INTO public."PrimitivaAp5" VALUES ('''+str(lista5[0]) + "," + str(lista5[1]) + "," + str(
+            lista5[2]) + "," + str(lista5[3]) + "," + str(lista5[4]) + "," + str(lista5[5]) + "," + str(lista5[6]) + ","+str(orden)+")"
+        queryInsertMedia10 = '''INSERT INTO public."PrimitivaAp10" VALUES ('''+str(lista10[0]) + "," + str(lista10[1]) + "," + str(
+            lista10[2]) + "," + str(lista10[3]) + "," + str(lista10[4]) + "," + str(lista10[5]) + "," + str(lista10[6]) + ","+str(orden)+")"
+        # print(queryInsertDes)
+        cursor.execute(queryInsertMedia5)
+        cursor.execute(queryInsertMedia10)
+
 def aparicionesPri(num,veces):
     cuenta=0
     #Establishing the connection
