@@ -691,7 +691,6 @@ def numVecesBon(ordenEntrada, bola, sorteos):
             cuenta += 1
     return cuenta
 
-
 def numVecesPri(ordenEntrada, bola, sorteos):
     cuenta = 0
     # Establishing the connection
@@ -730,8 +729,8 @@ def apariciones10Bon5():
             cursor.execute(query)
             valorBola = cursor.fetchmany(1)[0][0]
             
-            numApariciones5=UltimaAparicionBon(valorBola,5)
-            numApariciones10=UltimaAparicionBon(valorBola,10)
+            numApariciones5=numVecesBon(orden,valorBola,5)
+            numApariciones10=numVecesBon(orden,valorBola,10)
             lista5.append(numApariciones5)
             lista10.append(numApariciones10)
 
@@ -925,7 +924,7 @@ thread19 = threading.Thread(name="hilo19", target=desvEstPri)
 #thread19.start()
 thread20 = threading.Thread(name="hilo20", target=mediaBon)
 #thread20.start()
-thread21 = threading.Thread(name="hilo21", target=numVecesBon, args=(15, 6, 11))
+thread21 = threading.Thread(name="hilo21", target=apariciones10Bon5)
 thread21.start()
 thread13=threading.Thread(name="hilo13",target=aparicionesPri,args=(2,50))
 #thread13.start()
