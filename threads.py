@@ -552,7 +552,6 @@ def desvEstPri():
         # print(queryInsertDes)
         cursor.execute(queryInsertDes)
 
-
 def mediaBon():
     conn = psycopg2.connect(database="BBDD", user='postgres',
                             password='diego666', host='127.0.0.1', port='5432')
@@ -581,7 +580,6 @@ def mediaBon():
             listaMed[2]) + "," + str(listaMed[3]) + "," + str(listaMed[4]) + "," + str(listaMed[5]) + "," + str(listaMed[6]) + ","+str(orden)+")"
         # print(queryInsertDes)
         cursor.execute(queryInsertMedia)
-
 
 def mediaPri():
     conn = psycopg2.connect(database="BBDD", user='postgres',
@@ -644,7 +642,6 @@ def distMediaBon():
         # print(queryInsertDes)
         cursor.execute(queryInsertMedia)
 
-
 def distMediaPri():
     conn = psycopg2.connect(database="BBDD", user='postgres',
                             password='diego666', host='127.0.0.1', port='5432')
@@ -676,6 +673,57 @@ def distMediaPri():
             listaMed[2]) + "," + str(listaMed[3]) + "," + str(listaMed[4]) + "," + str(listaMed[5]) + "," + str(listaMed[6]) + ","+str(orden)+")"
         # print(queryInsertDes)
         cursor.execute(queryInsertMedia)
+
+def numVecesBon(ordenEntrada, bola, sorteos):
+    cuenta = 0
+    # Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    for ordenEvaluado in range(ordenEntrada-sorteos, ordenEntrada):
+        # print(ordenEvaluado)
+        queryCheck = '''SELECT exists ( SELECT 1 FROM public."Bonoloto" WHERE "Orden" =''' + str(ordenEvaluado)+''' AND ("Bola1"='''+str(bola)+''' OR "Bola2"='''+str(
+            bola)+''' OR "Bola3"='''+str(bola)+''' OR "Bola4"='''+str(bola)+''' OR "Bola5"='''+str(bola)+''' OR "Bola6"='''+str(bola)+''' OR "Bola7"='''+str(bola)+''') LIMIT 1);'''
+        cursor.execute(queryCheck)
+        respuesta = cursor.fetchmany(1)[0][0]
+        if (respuesta == True):
+            cuenta += 1
+    print(cuenta)
+
+def apariciones10Bon5():
+    conn = psycopg2.connect(database="BBDD", user='postgres',
+                            password='diego666', host='127.0.0.1', port='5432')
+    conn.autocommit = True  # Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo = '''SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo = cursor.fetchmany(1)[0][0]
+    for orden in range(0, orden_ultimo):
+        lista5 = []
+        lista10=[]
+        for b in range(7):
+            # print(listaBolas[b])
+            bola = b+1
+            bola = "Bola"+str(bola)
+            query = '''SELECT "'''+bola + \
+                '''" FROM public."Bonoloto" WHERE "Orden" =''' + \
+                str(orden) + ''';'''
+            cursor.execute(query)
+            valorBola = cursor.fetchmany(1)[0][0]
+            
+            numApariciones5=UltimaAparicionBon(valorBola,5)
+            numApariciones10=UltimaAparicionBon(valorBola,10)
+            lista5.append(numApariciones5)
+            lista10.append(numApariciones10)
+
+        queryInsertMedia5 = '''INSERT INTO public."BonolotoAp5" VALUES ('''+str(lista5[0]) + "," + str(lista5[1]) + "," + str(
+            lista5[2]) + "," + str(lista5[3]) + "," + str(lista5[4]) + "," + str(lista5[5]) + "," + str(lista5[6]) + ","+str(orden)+")"
+        queryInsertMedia10 = '''INSERT INTO public."BonolotoAp10" VALUES ('''+str(lista10[0]) + "," + str(lista10[1]) + "," + str(
+            lista10[2]) + "," + str(lista10[3]) + "," + str(lista10[4]) + "," + str(lista10[5]) + "," + str(lista10[6]) + ","+str(orden)+")"
+        # print(queryInsertDes)
+        cursor.execute(queryInsertMedia5)
+        cursor.execute(queryInsertMedia10)
 
 def aparicionesPri(num,veces):
     cuenta=0
@@ -859,7 +907,7 @@ thread19 = threading.Thread(name="hilo19", target=desvEstPri)
 #thread19.start()
 thread20 = threading.Thread(name="hilo20", target=mediaBon)
 #thread20.start()
-thread21 = threading.Thread(name="hilo21", target=distMediaPri)
+thread21 = threading.Thread(name="hilo21", target=numVecesBon, args=(15, 6, 11))
 thread21.start()
 thread13=threading.Thread(name="hilo13",target=aparicionesPri,args=(2,50))
 #thread13.start()
