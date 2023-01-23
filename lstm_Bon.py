@@ -55,7 +55,7 @@ model.add(Bidirectional(LSTM(240, input_shape=(
     tamaño_ventana, num_features), return_sequences=False)))
 model.add(Dense(59))
 model.add(Dense(num_features))
-model.compile(optimizer=Adam(learning_rate=0.0001),
+'''model.compile(optimizer=Adam(learning_rate=0.0001),
               loss='mse', metrics=['accuracy'])
 model.fit(x=X, y=y, batch_size=300, epochs=300, verbose=2)
 
@@ -65,7 +65,7 @@ with open("model_Bon.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
 model.save_weights("model_Bon.h5")
-print("Saved model to disk")
+print("Saved model to disk")'''
 
 # load json and create model
 json_file = open('model_Bon.json', 'r')
@@ -78,3 +78,5 @@ print("Loaded model from disk")
 
 y_pred = model.predict(np.array([df_transformada_test]))
 print("The predicted numbers in the last lottery game are:", scaler_test.inverse_transform(y_pred).astype(int)[0])
+prediction = np.array(df_test.tail(1))
+print("The actual numbers in the last lottery game were:", prediction[0])
