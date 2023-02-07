@@ -42,7 +42,7 @@ def crearInput(bola, orden):
         x_train = np.insert(
             x_train, x_train.shape[0], arrayInputs, axis=0)
     return x_train
-crearInput(1,10)
+
 
 def crearOutput(bola, orden):
     y_train = np.array([[[0.0000]]])
@@ -50,7 +50,7 @@ def crearOutput(bola, orden):
                             password='diego666', host='127.0.0.1', port='5432')
     conn.autocommit = True  # Setting auto commit false
     cursor = conn.cursor()
-    for orden in range(0, 10):
+    for orden in range(0, orden):
         query = '''SELECT "Bola'''+str(bola) + \
                 '''" FROM public."Bonoloto" WHERE "Orden" =''' + \
                 str(orden) + ''';'''
