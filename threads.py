@@ -15,23 +15,26 @@ import statistics
 import pandas as pd
 from pylab import *
 from scipy import stats
+import chromedriver_autoinstaller
+import matplotlib.pyplot as plt
 seed(3)
 
-
+chromedriver_autoinstaller.install()
 def primitiva():
     options = webdriver.ChromeOptions()
     options.add_experimental_option("excludeSwitches", ["enable-automation", "enable-logging"])
 
     service = Service(executable_path='/Users/Diego/Downloads/chromedriver')
     driver = webdriver.Chrome(service=service, options=options)
-    wait = WebDriverWait(driver, 10)
+    
 
     weblink= 'https://lawebdelaprimitiva.com/Primitiva/Historico%20de%20sorteos.html'
     driver.get(weblink)
     # accept cookies
-    #wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[aria-label="Consentir"]'))).click()
+    # wait = WebDriverWait(driver, 10)
+    # wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[aria-label="Consentir"]'))).click()
     # get all dates
-    lispes=driver.find_element("id","anio")
+    #lispes=driver.find_element("id","anio")
     dates = driver.find_elements(By.CSS_SELECTOR, 'select[name="anio"] option')
     #Establishing the connection
     conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
@@ -63,9 +66,9 @@ def primitiva():
             #print(j)
             #print(query)
             
-            cursor.execute(query)
+            #cursor.execute(query)
             # Commit your changes in the database
-            conn.commit()
+            #conn.commit()
             #print(raffle.text)
 
     driver.quit()
@@ -116,11 +119,11 @@ def bonoloto():
             i+=1
             j+=1
             #print(j)
-            #print(query)
+            print(query)
             
-            cursor.execute(query)
+            #cursor.execute(query)
             # Commit your changes in the database
-            conn.commit()
+            #conn.commit()
             #print(raffle.text)
 
     driver.quit()
@@ -812,6 +815,118 @@ def aparicionesBon(num,veces):
             cuenta+=1
     print(cuenta)
 
+def estDistPri():
+    apariciones=[0]*80
+    #Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
+    conn.autocommit = True#Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo='''SELECT "Orden" FROM public."PrimitivaComp" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo=cursor.fetchmany(1)[0][0]
+    print(orden_ultimo)
+    for orden in range(0,orden_ultimo):
+        for b in range(7):
+            bola=b+1
+            bola="B"+str(bola)+"_Last"   
+            query='''SELECT "'''+bola+'''" FROM public."PrimitivaComp" WHERE "Orden" ='''+ str(orden) +''';'''
+            cursor.execute(query)
+            valorBola=cursor.fetchmany(1)[0][0]
+            if(valorBola<80):
+                apariciones[valorBola-1]=apariciones[valorBola-1]+1
+    indices_asc=np.argsort(apariciones)
+    indices_desc=indices_asc[::-1]
+    indices_desc=np.add(indices_desc,1)
+    print(apariciones)
+    print(indices_desc)
+    
+    plt.pie(apariciones, labels=indices_desc,startangle=90, autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+
+def estDistBon():
+    apariciones=[0]*80
+    #Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
+    conn.autocommit = True#Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo='''SELECT "Orden" FROM public."BonolotoComp" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo=cursor.fetchmany(1)[0][0]
+    print(orden_ultimo)
+    for orden in range(0,orden_ultimo):
+        for b in range(7):
+            bola=b+1
+            bola="B"+str(bola)+"_Last"   
+            query='''SELECT "'''+bola+'''" FROM public."BonolotoComp" WHERE "Orden" ='''+ str(orden) +''';'''
+            cursor.execute(query)
+            valorBola=cursor.fetchmany(1)[0][0]
+            if(valorBola<80):
+                apariciones[valorBola-1]=apariciones[valorBola-1]+1
+    indices_asc=np.argsort(apariciones)
+    indices_desc=indices_asc[::-1]
+    indices_desc=np.add(indices_desc,1)
+    print(apariciones)
+    print(indices_desc)
+    
+    plt.pie(apariciones, labels=indices_desc,startangle=90, autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+
+def estAparPri():
+    apariciones=[0]*50
+    #Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
+    conn.autocommit = True#Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo='''SELECT "Orden" FROM public."Primitiva" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo=cursor.fetchmany(1)[0][0]
+    print(orden_ultimo)
+    for orden in range(0,orden_ultimo):
+        for b in range(7):
+            bola=b+1
+            bola="Bola"+str(bola)   
+            query='''SELECT "'''+bola+'''" FROM public."Primitiva" WHERE "Orden" ='''+ str(orden) +''';'''
+            cursor.execute(query)
+            valorBola=cursor.fetchmany(1)[0][0]
+            apariciones[valorBola-1]=apariciones[valorBola-1]+1
+    indices_asc=np.argsort(apariciones)
+    indices_desc=indices_asc[::-1]
+    print(apariciones)
+    print(indices_desc)
+    indices_desc=np.add(indices_desc,1)
+    plt.pie(apariciones, labels=indices_desc,startangle=90, autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+
+def estAparBon():
+    apariciones=[0]*50
+    #Establishing the connection
+    conn = psycopg2.connect(database="BBDD", user='postgres', password='diego666', host='127.0.0.1', port= '5432')
+    conn.autocommit = True#Setting auto commit false
+    cursor = conn.cursor()
+    query_ultimo='''SELECT "Orden" FROM public."Bonoloto" ORDER BY "Orden" DESC LIMIT 1'''
+    cursor.execute(query_ultimo)
+    orden_ultimo=cursor.fetchmany(1)[0][0]
+    print(orden_ultimo)
+    for orden in range(0,orden_ultimo):
+        for b in range(7):
+            bola=b+1
+            bola="Bola"+str(bola)   
+            query='''SELECT "'''+bola+'''" FROM public."Bonoloto" WHERE "Orden" ='''+ str(orden) +''';'''
+            cursor.execute(query)
+            valorBola=cursor.fetchmany(1)[0][0]
+            apariciones[valorBola-1]=apariciones[valorBola-1]+1
+    indices_asc=np.argsort(apariciones)
+    indices_desc=indices_asc[::-1]
+    print(apariciones)
+    print(indices_desc)
+    indices_desc=np.add(indices_desc,1)
+    plt.pie(apariciones, labels=indices_desc,startangle=90, autopct='%1.1f%%')
+    plt.axis('equal')
+    plt.show()
+
 def regLinPri():
     bola1=1
     #Establishing the connection
@@ -928,8 +1043,8 @@ def regPolPri():
     plt.show()
 
 #tiempo_ini=datetime.now()
-thread1=threading.Thread(name="hilo1",target=primitiva)
-#thread1.start()
+thread1=threading.Thread(name="hilo1",target=estDistPri)
+thread1.start()
 thread2=threading.Thread(name="hilo2",target=bonoloto)
 #thread2.start()
 thread3=threading.Thread(name="hilo3",target=actualizar_bonoloto)
@@ -958,8 +1073,8 @@ thread19 = threading.Thread(name="hilo19", target=desvEstPri)
 #thread19.start()
 thread20 = threading.Thread(name="hilo20", target=mediaBon)
 #thread20.start()
-thread21 = threading.Thread(name="hilo21", target=apariciones10Bon5)
-thread21.start()
+thread21 = threading.Thread(name="hilo21", target=apariciones10Pri5)
+#thread21.start()
 thread13=threading.Thread(name="hilo13",target=aparicionesPri,args=(2,50))
 #thread13.start()
 thread14=threading.Thread(name="hilo14",target=aparicionesBon,args=(2,50))
