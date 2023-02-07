@@ -6,18 +6,19 @@ class FCLayer(Layer):
     # input_size = numero de neuronas en el input
     # output_size = numero de neuronas en el output
     def __init__(self, input_size, output_size):
+        #inicia los pesos y los bias de manera aleatoria, serán cambiados con el aprendizaje
         self.weights = np.random.rand(input_size, output_size) - 0.5 #crea array de un tamaño y ejemplos random del [0, 1)
         self.bias = np.random.rand(1, output_size) - 0.5
 
     # returns output for a given input
     def forward_propagation(self, input_data):
+        #calcula y=w*x+b
         self.input = input_data
         self.output = np.dot(self.input, self.weights) + self.bias
         return self.output
     
     # Calcula dE/dW, dE/dB para un error deoutput (output_error=dE/dY). Devuelve el error de input input_error=dE/dX.
     def backward_propagation(self, output_error, learning_rate):
-        #producto punto
         input_error = np.dot(output_error, self.weights.T)
         weights_error = np.dot(self.input.T, output_error)
         # dBias = output_error
