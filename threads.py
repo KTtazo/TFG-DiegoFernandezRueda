@@ -1042,9 +1042,9 @@ def regPolPri():
     ax1.legend()
     plt.show()
 
-#tiempo_ini=datetime.now()
+tiempo_ini=datetime.now()
 thread1=threading.Thread(name="hilo1",target=estDistPri)
-thread1.start()
+#thread1.start()
 thread2=threading.Thread(name="hilo2",target=bonoloto)
 #thread2.start()
 thread3=threading.Thread(name="hilo3",target=actualizar_bonoloto)
